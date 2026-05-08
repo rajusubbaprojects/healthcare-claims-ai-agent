@@ -1,0 +1,15 @@
+# Environment 
+.env
+venv/
+__pycache__/
+*.pyc
+
+#ChromaDB local storage
+chroma_db
+
+#IDE
+.vscode/
+.DS_Store
+
+
+
