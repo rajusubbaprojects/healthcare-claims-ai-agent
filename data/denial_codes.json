@@ -1,0 +1,395 @@
+{
+  "CO-1": {
+    "code": "CO-1",
+    "category": "Deductible Amount",
+    "description": "Deductible amount applied according to patient's benefit plan.",
+    "common_causes": [
+      "Patient deductible not met",
+      "Service subject to deductible",
+      "High deductible health plan"
+    ],
+    "resolution": [
+      "Verify deductible status with payer",
+      "Bill patient responsibility appropriately",
+      "Review EOB for accuracy"
+    ]
+  },
+
+  "CO-4": {
+    "code": "CO-4",
+    "category": "Modifier Issue",
+    "description": "Modifier is missing, invalid, or not appropriate for the billed procedure.",
+    "common_causes": [
+      "Missing required modifier",
+      "Incorrect modifier usage",
+      "Modifier not compatible with CPT code",
+      "Bilateral modifier misuse"
+    ],
+    "resolution": [
+      "Review coding guidelines",
+      "Correct modifier usage",
+      "Verify payer-specific modifier policies",
+      "Resubmit corrected claim"
+    ]
+  },
+
+  "CO-11": {
+    "code": "CO-11",
+    "category": "Diagnosis Inconsistent",
+    "description": "Diagnosis code does not support billed procedure.",
+    "common_causes": [
+      "Incorrect ICD-10 code",
+      "Medical necessity mismatch",
+      "Coding documentation inconsistency"
+    ],
+    "resolution": [
+      "Review clinical documentation",
+      "Update diagnosis coding",
+      "Submit corrected claim with supporting records"
+    ]
+  },
+
+  "CO-16": {
+    "code": "CO-16",
+    "category": "Missing or Invalid Information",
+    "description": "Claim contains missing, incomplete, or invalid information.",
+    "common_causes": [
+      "Missing authorization",
+      "Invalid member ID",
+      "Incorrect NPI",
+      "Incomplete demographics"
+    ],
+    "resolution": [
+      "Review rejection details",
+      "Correct invalid fields",
+      "Resubmit updated claim"
+    ]
+  },
+
+  "CO-18": {
+    "code": "CO-18",
+    "category": "Duplicate Claim",
+    "description": "Claim or service has already been processed.",
+    "common_causes": [
+      "Duplicate submission",
+      "Resubmission without corrected indicator",
+      "System processing duplication"
+    ],
+    "resolution": [
+      "Verify claim history",
+      "Void duplicate claim if needed",
+      "Use corrected claim indicator"
+    ]
+  },
+
+  "CO-22": {
+    "code": "CO-22",
+    "category": "Coordination of Benefits",
+    "description": "Another payer is primary.",
+    "common_causes": [
+      "Incorrect payer order",
+      "Missing primary EOB",
+      "Outdated insurance information"
+    ],
+    "resolution": [
+      "Verify active coverage",
+      "Bill primary payer first",
+      "Attach primary EOB"
+    ]
+  },
+
+  "CO-23": {
+    "code": "CO-23",
+    "category": "Prior Payment Adjustment",
+    "description": "Impact of prior payer payment adjustment.",
+    "common_causes": [
+      "Secondary payer adjustment",
+      "COB recalculation",
+      "Previous payment reconciliation"
+    ],
+    "resolution": [
+      "Review prior payer EOB",
+      "Verify adjustment calculations",
+      "Appeal if discrepancy exists"
+    ]
+  },
+
+  "CO-24": {
+    "code": "CO-24",
+    "category": "Capitation",
+    "description": "Charges covered under capitation agreement.",
+    "common_causes": [
+      "Provider under capitated contract",
+      "Incorrect billing submission",
+      "Managed care agreement limitations"
+    ],
+    "resolution": [
+      "Review payer contract",
+      "Confirm capitated services",
+      "Adjust billing workflow"
+    ]
+  },
+
+  "CO-29": {
+    "code": "CO-29",
+    "category": "Timely Filing",
+    "description": "Claim filed after payer deadline.",
+    "common_causes": [
+      "Late submission",
+      "Delayed insurance verification",
+      "Administrative backlog"
+    ],
+    "resolution": [
+      "Submit proof of timely filing",
+      "Appeal if documentation exists",
+      "Improve claim submission process"
+    ]
+  },
+
+  "CO-45": {
+    "code": "CO-45",
+    "category": "Fee Schedule Adjustment",
+    "description": "Charge exceeds payer allowable amount.",
+    "common_causes": [
+      "Contractual adjustment",
+      "Incorrect fee schedule",
+      "Outdated billing rates"
+    ],
+    "resolution": [
+      "Review payer contract",
+      "Verify fee schedule",
+      "Adjust patient responsibility"
+    ]
+  },
+
+  "CO-50": {
+    "code": "CO-50",
+    "category": "Medical Necessity",
+    "description": "Service deemed not medically necessary.",
+    "common_causes": [
+      "Insufficient documentation",
+      "Diagnosis mismatch",
+      "Payer policy limitations"
+    ],
+    "resolution": [
+      "Submit clinical documentation",
+      "Appeal medical necessity determination",
+      "Review payer guidelines"
+    ]
+  },
+
+  "CO-96": {
+    "code": "CO-96",
+    "category": "Non-Covered Service",
+    "description": "Service is not covered under patient's plan.",
+    "common_causes": [
+      "Benefit exclusion",
+      "Experimental procedure",
+      "Coverage limitations"
+    ],
+    "resolution": [
+      "Verify benefits before service",
+      "Bill patient if appropriate",
+      "Appeal with documentation if applicable"
+    ]
+  },
+
+  "CO-97": {
+    "code": "CO-97",
+    "category": "Bundled Service",
+    "description": "Service included in another billed procedure.",
+    "common_causes": [
+      "NCCI edits",
+      "Improper unbundling",
+      "Missing modifier"
+    ],
+    "resolution": [
+      "Review coding edits",
+      "Apply appropriate modifier",
+      "Correct coding structure"
+    ]
+  },
+
+  "CO-109": {
+    "code": "CO-109",
+    "category": "Incorrect Payer",
+    "description": "Claim submitted to wrong insurance payer.",
+    "common_causes": [
+      "Wrong payer selection",
+      "Terminated coverage",
+      "Incorrect member ID"
+    ],
+    "resolution": [
+      "Verify eligibility",
+      "Submit to correct payer",
+      "Update insurance information"
+    ]
+  },
+
+  "CO-151": {
+    "code": "CO-151",
+    "category": "Missing Authorization",
+    "description": "Authorization or precertification missing.",
+    "common_causes": [
+      "No prior authorization",
+      "Expired authorization",
+      "Incorrect CPT approval"
+    ],
+    "resolution": [
+      "Obtain retro authorization if possible",
+      "Submit authorization details",
+      "Appeal with supporting records"
+    ]
+  },
+
+  "PR-1": {
+    "code": "PR-1",
+    "category": "Deductible",
+    "description": "Patient responsibility applied to deductible.",
+    "common_causes": [
+      "Annual deductible not met",
+      "Deductible-based plan"
+    ],
+    "resolution": [
+      "Bill patient appropriately",
+      "Verify deductible calculation"
+    ]
+  },
+
+  "PR-2": {
+    "code": "PR-2",
+    "category": "Coinsurance",
+    "description": "Patient coinsurance responsibility.",
+    "common_causes": [
+      "Coinsurance percentage",
+      "Out-of-network benefit structure"
+    ],
+    "resolution": [
+      "Bill patient according to EOB",
+      "Verify payer calculation"
+    ]
+  },
+
+  "PR-3": {
+    "code": "PR-3",
+    "category": "Copayment",
+    "description": "Patient copayment responsibility.",
+    "common_causes": [
+      "Office visit copay",
+      "Specialist copay"
+    ],
+    "resolution": [
+      "Collect copay amount",
+      "Verify benefit details"
+    ]
+  },
+
+  "OA-23": {
+    "code": "OA-23",
+    "category": "Prior Payer Adjustment",
+    "description": "Adjustment based on previous payer payment.",
+    "common_causes": [
+      "Secondary insurance processing",
+      "COB adjustments"
+    ],
+    "resolution": [
+      "Review prior payer EOB",
+      "Verify coordination of benefits"
+    ]
+  },
+
+  "CO-97-59": {
+    "code": "CO-97-59",
+    "category": "Bundled Service Modifier Needed",
+    "description": "Bundled denial where modifier 59 may be required.",
+    "common_causes": [
+      "Distinct procedural service not identified",
+      "Modifier 59 omitted"
+    ],
+    "resolution": [
+      "Review documentation",
+      "Add modifier 59 if appropriate",
+      "Resubmit corrected claim"
+    ]
+  },
+
+  "CO-197": {
+    "code": "CO-197",
+    "category": "Authorization Required",
+    "description": "Precertification or authorization absent.",
+    "common_causes": [
+      "Missing referral",
+      "No authorization obtained",
+      "Incorrect authorization details"
+    ],
+    "resolution": [
+      "Request authorization",
+      "Submit referral documentation",
+      "Appeal if emergency service"
+    ]
+  },
+
+  "CO-204": {
+    "code": "CO-204",
+    "category": "Service Not Covered",
+    "description": "Service not covered under current payer contract.",
+    "common_causes": [
+      "Benefit exclusion",
+      "Policy limitation",
+      "Out-of-network issue"
+    ],
+    "resolution": [
+      "Verify coverage details",
+      "Appeal if covered benefit exists",
+      "Bill patient if permitted"
+    ]
+  },
+
+  "CO-223": {
+    "code": "CO-223",
+    "category": "Benefit Maximum Reached",
+    "description": "Patient has reached benefit maximum.",
+    "common_causes": [
+      "Visit limit exceeded",
+      "Annual maximum reached",
+      "Therapy cap exceeded"
+    ],
+    "resolution": [
+      "Verify benefit usage",
+      "Request exception if applicable",
+      "Discuss patient responsibility"
+    ]
+  },
+
+  "CO-236": {
+    "code": "CO-236",
+    "category": "Legislated Requirement",
+    "description": "Claim denied due to legislated or regulatory requirements.",
+    "common_causes": [
+      "State-specific billing rules",
+      "Medicare compliance issue",
+      "Missing required documentation"
+    ],
+    "resolution": [
+      "Review payer regulations",
+      "Correct compliance issues",
+      "Resubmit with required documentation"
+    ]
+  },
+
+  "CO-252": {
+    "code": "CO-252",
+    "category": "Attachment Missing",
+    "description": "Required documentation or attachment missing.",
+    "common_causes": [
+      "Missing operative report",
+      "Absent medical records",
+      "No referral attachment"
+    ],
+    "resolution": [
+      "Submit required documentation",
+      "Attach supporting records",
+      "Resubmit corrected claim"
+    ]
+  }
+}
