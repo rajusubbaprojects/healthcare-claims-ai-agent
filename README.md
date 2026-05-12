@@ -1,6 +1,4 @@
-Here it is — copy everything below and paste into your `README.md`:
 
-```markdown
 # Healthcare Claims AI Agent
 
 An AI-powered agent that helps medical providers navigate insurance claims, understand denials, and generate appeal letters using Claude AI and RAG architecture.
