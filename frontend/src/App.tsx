@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './App.css';
 
-const API_URL = 'http://13.222.27.183:8000';
+const API_URL = 'http://claims-agent-alb-990387331.us-east-1.elb.amazonaws.com';
 
 interface Message {
   role: 'user' | 'agent';
