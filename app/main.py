@@ -5,9 +5,14 @@ import uuid
 from contextlib import asynccontextmanager
 from datetime import datetime
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import JSONResponse
 
 from app.agent import run_agent
 from app.config import get_settings
@@ -16,19 +21,13 @@ from app.rag.ingest import run_ingestion
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 settings = get_settings()
+limiter = Limiter(key_func=get_remote_address)
 
-# In-memory session storage
-# In production this would be Redis or a database
 sessions: dict[str, list[dict]] = {}
 
 
-# ─────────────────────────────────────────────
-# LIFESPAN — runs on startup and shutdown
-# ─────────────────────────────────────────────
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Run ingestion pipeline on startup."""
     logger.info("Starting Healthcare Claims AI Agent...")
     try:
         result = run_ingestion()
@@ -39,9 +38,27 @@ async def lifespan(app: FastAPI):
     logger.info("Shutting down Healthcare Claims AI Agent...")
 
 
-# ─────────────────────────────────────────────
-# APP SETUP
-# ─────────────────────────────────────────────
+class LimitRequestSizeMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        content_length = request.headers.get("content-length")
+        if content_length and int(content_length) > 10_000:
+            return JSONResponse(
+                status_code=413,
+                content={"detail": "Request too large"}
+            )
+        return await call_next(request)
+
+
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+        response.headers["Strict-Transport-Security"] = "max-age=31536000"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        return response
+
 
 app = FastAPI(
     title="Healthcare Claims AI Agent",
@@ -50,61 +67,53 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://claims-agent-ui-490841876782.s3-website-us-east-1.amazonaws.com",
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "DELETE"],
+    allow_headers=["Content-Type"],
 )
 
+app.add_middleware(LimitRequestSizeMiddleware)
+app.add_middleware(SecurityHeadersMiddleware)
 
-# ─────────────────────────────────────────────
-# REQUEST / RESPONSE MODELS
-# ─────────────────────────────────────────────
 
 class ChatRequest(BaseModel):
-    """Request model for chat endpoint.
-
-    Attributes:
-        message: The provider's question or request.
-        session_id: Optional session ID for conversation continuity.
-    """
     message: str
     session_id: str | None = None
 
+    @field_validator("message")
+    @classmethod
+    def validate_message(cls, v):
+        v = v.strip()
+        if not v:
+            raise ValueError("Message cannot be empty")
+        if len(v) > 2000:
+            raise ValueError("Message too long — max 2000 characters")
+        return v
+
 
 class ChatResponse(BaseModel):
-    """Response model for chat endpoint.
-
-    Attributes:
-        response: The agent's response.
-        session_id: Session ID for continuing the conversation.
-        timestamp: When the response was generated.
-    """
     response: str
     session_id: str
     timestamp: str
 
 
 class HealthResponse(BaseModel):
-    """Response model for health check endpoint."""
     status: str
     version: str
     environment: str
 
 
-# ─────────────────────────────────────────────
-# ENDPOINTS
-# ─────────────────────────────────────────────
-
 @app.get("/health", response_model=HealthResponse)
 async def health_check():
-    """Health check endpoint.
-
-    Returns:
-        Application health status.
-    """
     return HealthResponse(
         status="healthy",
         version="1.0.0",
@@ -113,25 +122,10 @@ async def health_check():
 
 
 @app.post("/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest):
-    """Main chat endpoint for the claims agent.
+@limiter.limit("10/minute")
+async def chat(request: Request, body: ChatRequest):
+    session_id = body.session_id or str(uuid.uuid4())
 
-    Accepts a provider message and returns the agent response.
-    Maintains conversation history per session.
-
-    Args:
-        request: ChatRequest with message and optional session_id.
-
-    Returns:
-        ChatResponse with agent response and session ID.
-
-    Raises:
-        HTTPException: If agent fails to process the message.
-    """
-    # Create new session if none provided
-    session_id = request.session_id or str(uuid.uuid4())
-
-    # Get or create conversation history for this session
     if session_id not in sessions:
         sessions[session_id] = []
 
@@ -139,11 +133,10 @@ async def chat(request: ChatRequest):
 
     try:
         response, updated_history = run_agent(
-            user_message=request.message,
+            user_message=body.message,
             conversation_history=conversation_history
         )
 
-        # Update session history
         sessions[session_id] = updated_history
 
         return ChatResponse(
@@ -162,14 +155,6 @@ async def chat(request: ChatRequest):
 
 @app.delete("/session/{session_id}")
 async def clear_session(session_id: str):
-    """Clear conversation history for a session.
-
-    Args:
-        session_id: The session ID to clear.
-
-    Returns:
-        Confirmation message.
-    """
     if session_id in sessions:
         del sessions[session_id]
         return {"message": f"Session {session_id} cleared"}
@@ -181,11 +166,6 @@ async def clear_session(session_id: str):
 
 @app.get("/sessions")
 async def list_sessions():
-    """List all active sessions.
-
-    Returns:
-        Dictionary of active session IDs and message counts.
-    """
     return {
         "active_sessions": len(sessions),
         "sessions": {
