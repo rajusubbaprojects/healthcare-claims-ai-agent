@@ -102,7 +102,10 @@ jobs:
 
       - name: Wait for deployment
         run: |
-          aws ecs wait services-stable \
+          echo "Waiting for deployment to stabilize..."
+          sleep 60
+          aws ecs describe-services \
             --cluster ${{ env.ECS_CLUSTER }} \
             --services ${{ env.ECS_SERVICE }} \
-            --region ${{ env.AWS_REGION }}
+            --region ${{ env.AWS_REGION }} \
+            --query "services[0].{Status:status,Running:runningCount,Desired:desiredCount}"
